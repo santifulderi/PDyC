@@ -8,7 +8,6 @@ import ar.edu.unnoba.pdyc2024.mymusic.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -86,6 +85,16 @@ public class PlaylistService {
         validatePlaylistOwner(playlist);
 
         playlistRepository.deleteById(playlistId);
+    }
+
+    @Transactional
+//    @Override
+    public List<Playlist> getPlaylistsByUser(String mail) {
+        User user = userRepository.findFirstByEmail(mail);
+        if (user != null) {
+            return playlistRepository.findByOwner_Id(user.getId());
+        }
+        return null;
     }
 
     private void validatePlaylistOwner(Playlist playlist) {
